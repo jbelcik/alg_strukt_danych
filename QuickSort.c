@@ -35,7 +35,7 @@ void ReadData(int *A)
   int i = 0;
   FILE *file = fopen("data.txt", "r" );
 
-  while(fscanf(file, "%i", &A[i++]) != EOF) Lenght ++;
+  while(fscanf(file, "%i", &A[i++]) != EOF) Lenght++;
 
   fclose(file);
 }
@@ -49,7 +49,7 @@ int main()
   ReadData(tab);
   for (i = 0; i < Lenght; i++) printf("%3i ", tab[i]);
   printf("\n");
-  QuickSort(tab, 0, Lenght - 1);
+  QuickSort(tab, 0, Lenght);
   for (i = 0; i < Lenght; i++) printf("%3i ", tab[i]);
   printf("\n");
 
