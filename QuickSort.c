@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 
-int Lenght;
+int Length;
 
 
 void exc(int *x, int *y)
@@ -35,7 +35,7 @@ void ReadData(int *A)
   int i = 0;
   FILE *file = fopen("data.txt", "r" );
 
-  while(fscanf(file, "%i", &A[i++]) != EOF) Lenght++;
+  while(fscanf(file, "%i", &A[i++]) != EOF) Length++;
 
   fclose(file);
 }
@@ -43,14 +43,14 @@ void ReadData(int *A)
 
 int main()
 {
-  Lenght = 0;
+  Length = 0;
   int tab[100], i;
 
   ReadData(tab);
-  for (i = 0; i < Lenght; i++) printf("%3i ", tab[i]);
+  for (i = 0; i < Length; i++) printf("%3i ", tab[i]);
   printf("\n");
-  QuickSort(tab, 0, Lenght);
-  for (i = 0; i < Lenght; i++) printf("%3i ", tab[i]);
+  QuickSort(tab, 0, Length);
+  for (i = 0; i < Length; i++) printf("%3i ", tab[i]);
   printf("\n");
 
   return 0;
