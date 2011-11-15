@@ -7,7 +7,7 @@
 #define y 300
 
 
-int len = 0, cols;
+int len = 0, cols = 0;
 
 
 int get(char **A, int row, int col)
@@ -22,22 +22,19 @@ int max(int a, int b)
 }
 
 
-void read(char ***A)
+void read(char **A)
 {
   FILE *file = fopen("2data.txt", "r");
 
-  *A = (char **) malloc(x * sizeof(char*));
-
   int i;
 
-  char *c = (char*) malloc(x * sizeof(char)); // char c[300] powoduje warningi
-
+  char *c = (char*) malloc(y * sizeof(char));
   for (i = 0; i < x; i++)
   {
     if (fscanf(file, "%s", c) == EOF) break;
 
-    (*A)[i] = (char*) malloc((strlen(c) + 1) * sizeof(char));
-    strcpy((*A)[i], c);
+    A[i] = (char*) malloc((strlen(c) + 1) * sizeof(char));
+    strcpy(A[i], c);
     cols = max(cols, strlen(c));
   }
 
@@ -51,14 +48,13 @@ void read(char ***A)
 
 int main()
 {
-
   char **A, **B;
 
-  read(&A);
+  A = (char**) malloc(x * sizeof(char*));
+
+  read(A);
 
   int i;
-
-  printf("len: %i\ncols: %i\n", len, cols);
 
   printf("\nPrzed:\n");
 
