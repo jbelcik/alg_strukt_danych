@@ -62,8 +62,8 @@ void searchNode(struct node *head, int data)
 
 void insertNextNode(struct node *head, int data, int newData)
 {
-  struct node *currentNode = head;
-  struct node *newNode = malloc(sizeof(struct node));
+  struct node *currentNode = head,
+              *newNode = malloc(sizeof(struct node));
   
   while (currentNode != NULL)
   {  
