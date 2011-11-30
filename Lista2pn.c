@@ -1,6 +1,5 @@
-// ...bozbyc sie errorow w funkcji insertNextNode
-// i warningow w funkcjach buildList oraz insertHeadNode
 #include <stdio.h>
+#include <stdlib.h>
 
 
 struct node
@@ -13,11 +12,9 @@ struct node
 
 struct node *buildList()
 {
-  struct node *head = NULL, *one = NULL, *two = NULL;
-
-  head = malloc(sizeof(struct node));
-  one = malloc(sizeof(struct node));
-  two = malloc(sizeof(struct node));
+  struct node *head = malloc(sizeof(struct node)),
+              *one = malloc(sizeof(struct node)),
+              *two = malloc(sizeof(struct node));
 
   head -> prev = NULL;
   head -> data = 1;
@@ -38,6 +35,7 @@ struct node *buildList()
 void insertHeadNode(struct node **headPtr, int data)
 {
   struct node *newNode = malloc(sizeof(struct node));
+
   newNode -> prev = newNode;
   newNode -> data = data;
   newNode -> next = *headPtr;
@@ -53,31 +51,35 @@ void searchNode(struct node *head, int data)
   {
     if (currentNode -> data == data)
     {
-      printf("Ten element znajduje sie na liscie\n");
+      printf("Podany element znajduje sie na liscie\n");
       return;
     }
     currentNode = currentNode -> next;
   }
-  printf("Ten element nie znajduje sie na liscie\n");
+  printf("Podany element nie znajduje sie na liscie\n");
 }
 
 
-/*
-void insertNextNode(struct node **nodePtr, int data)
+void insertNextNode(struct node *head, int data, int newData)
 {
+  struct node *currentNode = head;
   struct node *newNode = malloc(sizeof(struct node));
-
-  if (nodePtr == NULL) insertHeadNode(nodePtr, data);
-  else
-  {
-    newNode -> prev = *nodePtr;
-    newNode -> data = data;
-    newNode -> next = *nodePtr.next;
-    if (nodePtr.next != NULL) nodePtr.next -> prev = *newNode;
-    nodePtr -> next = *newNode;
+  
+  while (currentNode != NULL)
+  {  
+    if (currentNode -> data == data)  
+    {
+      newNode -> prev = currentNode;
+      newNode -> data = newData;
+      newNode -> next = currentNode -> next;
+      if (currentNode -> next != NULL) (currentNode -> next) -> prev = newNode;
+      currentNode -> next = newNode;
+      return;
+    }
+    currentNode = currentNode -> next;
   }
+  printf("Podany element nie znajduje sie na liscie\n");
 }
-*/
 
 
 void writeList(struct node *head)
@@ -101,11 +103,11 @@ int main()
 
   insertHeadNode(&head, 4);
 
-  //insertNextNode(&head, 5);
+  insertNextNode(head, 2, 5);
 
   writeList(head);
 
-  searchNode(head, 0);
+  searchNode(head, 4);
 
   return 0;
 }
