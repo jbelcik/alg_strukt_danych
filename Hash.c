@@ -34,19 +34,19 @@ void read(char **A)
 }
 
 
-int stringToInteger(char **A, int row)
+unsigned long long stringToInteger(char **A, int row)
 {
   int j,
-      n = 1,
-      l = strlen(A[row]);
+      l = strlen(A[row]) - 1;
+  unsigned long long n = 0;
 
-  for (j = l; j > 0; j--) n += pow(system, (l - 1)) * (int) A[row][j];
+  for (j = l; j >= 0; j--) n += pow(system, (l - j)) * (int) A[row][j];
 
   return n;
 }
 
 
-int modHash(int k)
+unsigned long long modHash(unsigned long long k)
 {
   return k % m;
 }
@@ -55,17 +55,18 @@ int modHash(int k)
 int main()
 {
   char **A;
-  int i,
-      k;
+  int i;
+  unsigned long long k;
 
   A = (char**) malloc(m * sizeof(char*));
 
   read(A);
 
-  for (i = 0; i <= max; i++)
+  for (i = 0; i < max; i++)
   {
+    printf("%s\n", A[i]);
     k = stringToInteger(A, i);
-    printf("%i\n%i\n", k, modHash(k));
+    printf("%lli\n%lli\n\n", k, modHash(k));
   }
 
   free(A);

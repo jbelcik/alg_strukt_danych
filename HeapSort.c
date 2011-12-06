@@ -68,7 +68,7 @@ void HeapSort(int* A)
 void ReadData(int *A)
 {
   int i = 0;
-  FILE *file = fopen("data.txt", "r" );
+  FILE *file = fopen("1data.txt", "r" );
 
   while(fscanf(file, "%i", &A[i++]) != EOF) Lenght ++;
 
