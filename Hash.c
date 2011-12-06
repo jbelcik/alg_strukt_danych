@@ -1,11 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 
 #define m 3761
 #define length 20
 #define system 26
+
+
+int max;
 
 
 void read(char **A)
@@ -22,6 +26,8 @@ void read(char **A)
     strcpy(A[i], c);
   }
 
+  max = i;
+
   fclose(file);
 
   free(c);
@@ -30,9 +36,35 @@ void read(char **A)
 
 int stringToInteger(char **A, int row)
 {
-  int l = strlen(A[row]);
+  int j,
+      n = 1,
+      l = strlen(A[row]);
 
-  for (j = l; j > 0; j++) n += A[row][j] * pow(system, (l - j));
+  for (j = l; j > 0; j++)n += pow(system, (l - 1)) * (int) A[row][j];
 
   return n;
+}
+
+
+int modHash(int k)
+{
+  return k % m;
+}
+
+
+int main()
+{
+  char **A;
+  int i;
+
+  A = (char**) malloc(m * sizeof(char*));
+
+  read(A);
+
+  for (i = 0; i < max; i++)
+  {
+    printf("%i\n", stringToInteger(A, i));
+  }
+
+  return 0;
 }
