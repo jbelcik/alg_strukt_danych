@@ -40,7 +40,7 @@ int stringToInteger(char **A, int row)
       n = 1,
       l = strlen(A[row]);
 
-  for (j = l; j > 0; j++)n += pow(system, (l - 1)) * (int) A[row][j];
+  for (j = l; j > 0; j--) n += pow(system, (l - 1)) * (int) A[row][j];
 
   return n;
 }
@@ -55,16 +55,20 @@ int modHash(int k)
 int main()
 {
   char **A;
-  int i;
+  int i,
+      k;
 
   A = (char**) malloc(m * sizeof(char*));
 
   read(A);
 
-  for (i = 0; i < max; i++)
+  for (i = 0; i <= max; i++)
   {
-    printf("%i\n", stringToInteger(A, i));
+    k = stringToInteger(A, i);
+    printf("%i\n%i\n", k, modHash(k));
   }
+
+  free(A);
 
   return 0;
 }
