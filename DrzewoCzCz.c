@@ -461,16 +461,53 @@ void WKInsertColors()
 
 /* ----------------- program testujacy ---------------------- */
 
-main(){
-     nilInit();
-     int n,k;
-     Wskwezla korzen=nil;
-     printf("podaj wysokosc drzewa (0..4) ");
-     scanf("%d", &n);
-     buduj(&korzen,n);
-     drukuj(korzen);
-     RBInsert(korzen, 1);
-     drukuj(korzen);
-     RBDelete(korzen, 1);
-     drukuj(korzen);
+int main()
+{
+  nilInit();
+
+  int n, k, w;
+  Wskwezla korzen = nil;
+
+  printf("podaj wysokosc drzewa (0...4): ");
+  scanf("%i", &n);
+
+  buduj(&korzen,n);
+  drukuj(korzen);
+
+  while (1)
+  {
+    printf("\n1 - wydrukuj drzewo\n");
+    printf("2 - wstaw element\n");
+    printf("3 - usun element\n");
+    printf("4 - wyjdz\n");
+    printf("wybor: ");
+    scanf("%i", &w);
+
+    switch (w)
+    {
+      case 1:
+        drukuj(korzen);
+        break;
+
+      case 2:
+        printf("\npodaj element: ");
+        scanf("%i", &k);
+        RBInsert(korzen, k);
+        break;
+        
+      case 3:
+        printf("\n   !!! opcja niedostepna !!!   \n");
+        //printf("podaj element: ");
+        //scanf("%i", &k);
+        //RBDelete(korzen, k);
+        break;
+
+      case 4:
+        return 0;
+        break;
+
+    }
+  }
+
+  return 0;
 }
