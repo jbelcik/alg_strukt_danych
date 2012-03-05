@@ -206,16 +206,13 @@ void treeInsert(Wskwezla korzen, Wskwezla z)
   {
     korzen = z;
   }
+  else if (z -> klucz < y -> klucz)
+  {
+    y -> left = z;
+  }
   else
   {
-    if (z -> klucz < y -> klucz)
-    {
-      y -> left = z;
-    }
-    else
-    {
-      y -> right = z;
-    }
+    y -> right = z;
   }
 }
 
@@ -229,6 +226,8 @@ void RBInsert(Wskwezla korzen, int k)
   treeInsert(korzen, x);
 
   x -> kolor = RED;
+  x -> left = nil;
+  x -> right = nil;
 
   while (x != korzen && x -> p -> kolor == RED)
   {
@@ -286,9 +285,171 @@ void RBInsert(Wskwezla korzen, int k)
 }
 
 
-void RBDelete()
+Wskwezla treeMinimum(Wskwezla x)
 {
-  
+  while (x -> left != nil)
+  {
+    x = x -> left;
+  }
+
+  return x;
+}
+
+
+Wskwezla treeSuccessor(Wskwezla x)
+{
+  if (x -> right != nil)
+  {
+    return treeMinimum(x -> right);
+  }
+
+  Wskwezla y = x -> p;
+
+  while (y != nil && x == y -> right)
+  {
+    x = y;
+    y = y -> p;
+  }
+
+  return y;
+}
+
+
+void RBDeleteFixup(Wskwezla korzen, Wskwezla x)
+{
+  Wskwezla w;
+
+  while (x != korzen && x -> kolor == BLACK)
+  {
+    if (x == x -> p -> left)
+    {
+      w = x -> p -> right;
+
+      if (w -> kolor == RED)
+      {
+        w -> kolor = BLACK;
+        x -> p -> kolor = RED;
+        leftRotate(korzen, x -> p);
+        w = x -> p -> right;
+      }
+
+      if (w -> left -> kolor == BLACK && w -> right -> kolor == BLACK)
+      {
+        w -> kolor = RED;
+        x = x -> p;
+      }
+      else
+      {
+        if (w -> right -> kolor == BLACK)
+        {
+          w -> left -> kolor = BLACK;
+          w -> kolor = RED;
+          rightRotate(korzen, w);
+          w = x -> p -> right;
+        }
+
+        w -> kolor = x -> p -> kolor;
+        x -> p -> kolor = BLACK;
+        w -> right -> kolor = BLACK;
+        leftRotate(korzen, x -> p);
+        x = korzen;
+      }
+    }
+    else
+    {
+      w = x -> p -> left;
+
+      if (w -> kolor == RED)
+      {
+        w -> kolor = BLACK;
+        x -> p -> kolor = RED;
+        rightRotate(korzen, x -> p);
+        w = x -> p -> left;
+      }
+
+      if (w -> right -> kolor == BLACK && w -> left -> kolor == BLACK)
+      {
+        w -> kolor = RED;
+        x = x -> p;
+      }
+      else
+      {
+        if (w -> left -> kolor == BLACK)
+        {
+          w -> right -> kolor = BLACK;
+          w -> kolor = RED;
+          leftRotate(korzen, w);
+          w = x -> p -> left;
+        }
+
+        w -> kolor = x -> p -> kolor;
+        x -> p -> kolor = BLACK;
+        w -> right -> kolor = BLACK;
+        rightRotate(korzen, x -> p);
+        x = korzen;
+      }
+    }
+
+    x -> kolor = BLACK;
+  }
+}
+
+
+Wskwezla RBDelete(Wskwezla korzen, int k)
+{
+  Wskwezla z = (Wskwezla) malloc(sizeof(Twezla)), y, x;
+
+  z -> klucz = k;
+  z -> left = nil;
+  z -> right = nil;
+
+  if (z -> left == korzen || z -> right == korzen)
+  {
+    y = z;
+  }
+  else
+  {
+    y = treeSuccessor(z);
+  }
+
+  if (y -> left != korzen)
+  {
+    x = y -> left;
+  }
+  else
+  {
+    x = y -> right;
+  }
+
+  x -> p = y -> p;
+
+  if (y -> p == korzen)
+  {
+    korzen = x;
+  }
+  else if (y == y -> p -> left)
+  {
+    y -> p -> left = x;
+  }
+  else
+  {
+    y -> p -> right = x;
+  }
+
+  if (y != z)
+  {
+    z -> klucz = y -> klucz;
+    z -> left = y -> left;
+    z -> right = y -> right;
+    z -> p = y -> p;
+  }
+
+  if (y -> kolor == BLACK)
+  {
+    RBDeleteFixup(korzen, x);
+  }
+
+  return y;
 }
 
 
@@ -309,5 +470,7 @@ main(){
      buduj(&korzen,n);
      drukuj(korzen);
      RBInsert(korzen, 1);
+     drukuj(korzen);
+     RBDelete(korzen, 1);
      drukuj(korzen);
 }
