@@ -284,10 +284,26 @@ void RBInsert(Wskwezla korzen, int k)
   korzen -> kolor = BLACK;
 }
 
+Wskwezla RBSearch(Wskwezla x, int k)
+{
+  while(x != NULL && x != nil && x -> klucz != k)
+  {
+    if (k < x -> klucz)
+    {
+      x = x -> left;
+    }
+    else
+    {
+      x = x -> right;
+    }
+  }
+
+  return x;
+}
 
 Wskwezla treeMinimum(Wskwezla x)
 {
-  while (x -> left != nil)
+  while (x -> left != NULL && x -> left != nil)
   {
     x = x -> left;
   }
@@ -298,12 +314,14 @@ Wskwezla treeMinimum(Wskwezla x)
 
 Wskwezla treeSuccessor(Wskwezla x)
 {
-  if (x -> right != nil)
+  Wskwezla y = NULL;
+
+  if (x -> right != NULL && x -> right != nil)
   {
     return treeMinimum(x -> right);
   }
 
-  Wskwezla y = x -> p;
+  y = x -> p;
 
   while (y != nil && x == y -> right)
   {
@@ -317,7 +335,7 @@ Wskwezla treeSuccessor(Wskwezla x)
 
 void RBDeleteFixup(Wskwezla korzen, Wskwezla x)
 {
-  Wskwezla w;
+  Wskwezla w = NULL;
 
   while (x != korzen && x -> kolor == BLACK)
   {
@@ -395,67 +413,87 @@ void RBDeleteFixup(Wskwezla korzen, Wskwezla x)
 }
 
 
-Wskwezla RBDelete(Wskwezla korzen, int k)
+void RBDelete(Wskwezla korzen, int k)
 {
-  Wskwezla z = (Wskwezla) malloc(sizeof(Twezla)), y, x;
+  Wskwezla z = RBSearch(korzen, k),
+           y = NULL,
+           x = NULL;
 
-  z -> klucz = k;
-  z -> left = nil;
-  z -> right = nil;
-
-  if (z -> left == korzen || z -> right == korzen)
+  if (z != NULL && z != nil)
   {
-    y = z;
+    if (z -> left == nil || z -> right == nil)
+    {
+      y = z;
+    }
+    else
+    {
+      y = treeSuccessor(z);
+    }
+
+    if (y -> left != nil)
+    {
+      x = y -> left;
+    }
+    else
+    {
+      x = y -> right;
+    }
+
+    x -> p = y -> p;
+
+    if (y -> p == nil)
+    {
+      korzen = x;
+    }
+    else if (y == y -> p -> left)
+    {
+      y -> p -> left = x;
+    }
+    else
+    {
+      y -> p -> right = x;
+    }
+
+    if (y != z)
+    {
+      z -> klucz = y -> klucz;
+    }
+
+    if (y -> kolor == BLACK)
+    {
+      RBDeleteFixup(korzen, x);
+    }
   }
   else
   {
-    y = treeSuccessor(z);
+    printf("\nnie ma takiego elementu\n");
   }
-
-  if (y -> left != korzen)
-  {
-    x = y -> left;
-  }
-  else
-  {
-    x = y -> right;
-  }
-
-  x -> p = y -> p;
-
-  if (y -> p == korzen)
-  {
-    korzen = x;
-  }
-  else if (y == y -> p -> left)
-  {
-    y -> p -> left = x;
-  }
-  else
-  {
-    y -> p -> right = x;
-  }
-
-  if (y != z)
-  {
-    z -> klucz = y -> klucz;
-    z -> left = y -> left;
-    z -> right = y -> right;
-    z -> p = y -> p;
-  }
-
-  if (y -> kolor == BLACK)
-  {
-    RBDeleteFixup(korzen, x);
-  }
-
-  return y;
 }
 
 
-void WKInsertColors()
+void WKInsertColors(Wskwezla korzen)
 {
+  int random, i, w = 0, l = 0;
+  Wskwezla z;
   
+  for(i = 0; i < 100; i++)
+  {
+    random = rand() % 100;
+    printf("%i\n", random);
+    z = RBSearch(korzen, random);
+
+    if (z != NULL && z != nil)
+    {
+      RBInsert(korzen, random);
+      w++;
+    }
+    else
+    {
+      l++;
+    }
+  }
+
+  printf("\nwstawienia = %i\nwyszukania = %i\n", w, l);
 }
 
 
@@ -479,7 +517,8 @@ int main()
     printf("\n1 - wydrukuj drzewo\n");
     printf("2 - wstaw element\n");
     printf("3 - usun element\n");
-    printf("4 - wyjdz\n");
+    printf("4 - WKInsertColors\n");
+    printf("5 - wyjdz\n");
     printf("wybor: ");
     scanf("%i", &w);
 
@@ -496,16 +535,18 @@ int main()
         break;
         
       case 3:
-        printf("\n   !!! opcja niedostepna !!!   \n");
-        //printf("podaj element: ");
-        //scanf("%i", &k);
-        //RBDelete(korzen, k);
+        printf("podaj element: ");
+        scanf("%i", &k);
+        RBDelete(korzen, k);
         break;
 
       case 4:
-        return 0;
+        WKInsertColors(korzen);
         break;
 
+      case 5:
+        return 0;
+        break;
     }
   }
 
