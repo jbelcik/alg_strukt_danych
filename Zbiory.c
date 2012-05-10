@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
 typedef struct node *nodePointer;
 typedef struct node
 {
@@ -8,7 +9,9 @@ typedef struct node
   nodePointer next, head, last;
 } nodeType;
 
+
 nodePointer NIL;
+
 
 void NILinitialize(void)
 {
@@ -16,9 +19,10 @@ void NILinitialize(void)
   NIL -> next = NIL -> head = NIL -> last = NULL;
 }
 
+
 nodePointer MakeSet(int k)
 {
-  nodePointer x;
+  nodePointer x = (nodePointer) malloc(sizeof(nodeType));
 
   x -> key = k;
   x -> head = x;
@@ -28,10 +32,12 @@ nodePointer MakeSet(int k)
   return x;
 }
 
+
 nodePointer FindSet(nodePointer x)
 {
   return x -> head;
 }
+
 
 void Union(nodePointer x, nodePointer y)
 {
@@ -45,6 +51,7 @@ void Union(nodePointer x, nodePointer y)
   }
 }
 
+
 int main()
 {
   NILinitialize();
@@ -53,6 +60,19 @@ int main()
   nodePointer Z[e];
 
   for (i = 0; i < e; i++) Z[i] = MakeSet(i);
+
+  for (i = 0; i < e; i++)
+  {
+    printf("Z[%i] = { ", i);
+    while (Z[i] != NIL)
+    {
+      printf("%i ", Z[i] -> key);
+      Z[i] = Z[i] -> next;
+    }
+    printf("}\n");
+  }
+
+  Union(FindSet(Z[0]), FindSet(Z[0]));
 
   return 0;
 }
