@@ -61,18 +61,31 @@ int main()
 
   for (i = 0; i < e; i++) Z[i] = MakeSet(i);
 
+  Union(FindSet(Z[0]),FindSet(Z[2]));
+  Union(FindSet(Z[1]),FindSet(Z[2]));
+  Union(FindSet(Z[3]),FindSet(Z[0]));
+  Union(FindSet(Z[5]),FindSet(Z[6]));
+  Union(FindSet(Z[7]),FindSet(Z[8]));
+
+  nodePointer currentNode;
+
   for (i = 0; i < e; i++)
   {
-    printf("Z[%i] = { ", i);
-    while (Z[i] != NIL)
-    {
-      printf("%i ", Z[i] -> key);
-      Z[i] = Z[i] -> next;
-    }
-    printf("}\n");
-  }
+    //if (Z[i] != NULL)
+    //{
+      currentNode = Z[i];
 
-  Union(FindSet(Z[0]), FindSet(Z[0]));
+      printf("Z[%i] = { ", i);
+    
+      while (currentNode != NIL)
+      {
+        printf("%i ", currentNode -> key);
+        currentNode = currentNode -> next;
+      }
+    
+      printf("}\n");
+    //}
+  }
 
   return 0;
 }
