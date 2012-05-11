@@ -5,7 +5,7 @@
 typedef struct node *nodePointer;
 typedef struct node
 {
-  int key;
+  int key, guard;
   nodePointer next, head, last;
 } nodeType;
 
@@ -25,6 +25,7 @@ nodePointer MakeSet(int k)
   nodePointer x = (nodePointer) malloc(sizeof(nodeType));
 
   x -> key = k;
+  x -> guard = 0;
   x -> head = x;
   x -> last = x;
   x -> next = NIL;
@@ -41,13 +42,41 @@ nodePointer FindSet(nodePointer x)
 
 void Union(nodePointer x, nodePointer y)
 {
-  x -> last -> next = y;
-  x -> last = y -> last;
+  nodePointer currentNode = y;
+  y -> guard = 1;
 
-  while (y != NIL)
+  x -> last -> next = currentNode;
+  x -> last = currentNode -> last;
+
+  while (currentNode != NIL)
   {
-    y -> head = x;
-    y = y -> next;
+    currentNode -> head = x;
+    currentNode = currentNode -> next;
+  }
+}
+
+
+void writeSet(nodePointer Z[], int e)
+{
+  int i;
+  nodePointer currentNode;
+
+  for (i = 0; i < e; i++)
+  {
+    if (Z[i] -> guard == 0)
+    {
+      currentNode = Z[i];
+      
+      printf("Z[%i] = { ", i);
+      
+      while (currentNode != NIL)
+      {
+        printf("%i ", currentNode -> key);
+        currentNode = currentNode -> next;
+      }
+      
+      printf("}\n");
+    }
   }
 }
 
@@ -56,36 +85,83 @@ int main()
 {
   NILinitialize();
 
-  int i, e = 10;
-  nodePointer Z[e];
+  int i, c, o, t, e = 10;
+  nodePointer currentNode, Z[e];
 
   for (i = 0; i < e; i++) Z[i] = MakeSet(i);
 
-  Union(FindSet(Z[0]),FindSet(Z[2]));
-  Union(FindSet(Z[1]),FindSet(Z[2]));
-  Union(FindSet(Z[3]),FindSet(Z[0]));
-  Union(FindSet(Z[5]),FindSet(Z[6]));
-  Union(FindSet(Z[7]),FindSet(Z[8]));
-
-  nodePointer currentNode;
+  printf("Listowa reprezentacja zbiorow zlacznych\n");
+  printf("Zbiory poczatkowe:\n");
+  //writeSet(&Z[e], e);
 
   for (i = 0; i < e; i++)
   {
-    //if (Z[i] != NULL)
-    //{
+    if (Z[i] -> guard == 0)
+    {
       currentNode = Z[i];
-
+      
       printf("Z[%i] = { ", i);
-    
+      
       while (currentNode != NIL)
       {
         printf("%i ", currentNode -> key);
         currentNode = currentNode -> next;
       }
-    
+      
       printf("}\n");
-    //}
+    }
   }
 
-  return 0;
+  while (1)
+  {
+    printf("\n1 - wydrukuj zbiory\n");
+    printf("2 - polacz zbiory\n");
+    printf("3 - resetuj zbiory\n");
+    printf("4 - zakoncz program\n");
+    printf("Twoj wybor: ");
+    scanf("%i", &c);
+
+    switch (c)
+    {
+      case 1:
+        //writeSet(&Z[e], e);
+        printf("\n");
+
+        for (i = 0; i < e; i++)
+        {
+          if (Z[i] -> guard == 0)
+          {
+            currentNode = Z[i];
+            
+            printf("Z[%i] = { ", i);
+            
+            while (currentNode != NIL)
+            {
+              printf("%i ", currentNode -> key);
+              currentNode = currentNode -> next;
+            }
+            
+            printf("}\n");
+          }
+        }
+        break;
+      
+      case 2:
+        printf("\nPodaj pierwszy zbior: ");
+        scanf("%i", &o);
+        printf("Podaj drugi zbior: ");
+        scanf("%i", &t);
+
+        Union(FindSet(Z[o]), FindSet(Z[t]));
+        break;
+
+      case 3:
+        for (i = 0; i < e; i++) Z[i] = MakeSet(i);
+        break;
+
+      case 4:
+        return 0;
+        break;
+    }
+  }
 }
