@@ -86,31 +86,13 @@ int main()
   NILinitialize();
 
   int i, c, o, t, e = 10;
-  nodePointer currentNode, Z[e];
+  nodePointer Z[e];
 
   for (i = 0; i < e; i++) Z[i] = MakeSet(i);
 
   printf("Listowa reprezentacja zbiorow zlacznych\n");
   printf("Zbiory poczatkowe:\n");
-  //writeSet(&Z[e], e);
-
-  for (i = 0; i < e; i++)
-  {
-    if (Z[i] -> guard == 0)
-    {
-      currentNode = Z[i];
-      
-      printf("Z[%i] = { ", i);
-      
-      while (currentNode != NIL)
-      {
-        printf("%i ", currentNode -> key);
-        currentNode = currentNode -> next;
-      }
-      
-      printf("}\n");
-    }
-  }
+  writeSet(Z, e);
 
   while (1)
   {
@@ -124,26 +106,8 @@ int main()
     switch (c)
     {
       case 1:
-        //writeSet(&Z[e], e);
         printf("\n");
-
-        for (i = 0; i < e; i++)
-        {
-          if (Z[i] -> guard == 0)
-          {
-            currentNode = Z[i];
-            
-            printf("Z[%i] = { ", i);
-            
-            while (currentNode != NIL)
-            {
-              printf("%i ", currentNode -> key);
-              currentNode = currentNode -> next;
-            }
-            
-            printf("}\n");
-          }
-        }
+        writeSet(Z, e);
         break;
       
       case 2:
