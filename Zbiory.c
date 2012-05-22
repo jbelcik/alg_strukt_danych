@@ -85,45 +85,63 @@ int main()
 {
   NILinitialize();
 
-  int i, c, o, t, e = 10;
+  int c, o, t, e = 0;
   nodePointer Z[e];
 
-  for (i = 0; i < e; i++) Z[i] = MakeSet(i);
+  //for (i = 0; i < e; i++) Z[i] = MakeSet(i);
 
-  printf("Listowa reprezentacja zbiorow zlacznych\n");
-  printf("Zbiory poczatkowe:\n");
-  writeSet(Z, e);
+  //printf("Listowa reprezentacja zbiorow zlacznych\n");
+  //printf("Zbiory poczatkowe:\n");
+  //writeSet(Z, e);
 
   while (1)
   {
     printf("\n1 - wydrukuj zbiory\n");
-    printf("2 - polacz zbiory\n");
-    printf("3 - resetuj zbiory\n");
-    printf("4 - zakoncz program\n");
+    printf("2 - dodaj wierzcholek\n");
+    printf("3 - dodaj krawedz\n");
+    printf("4 - sprawdz czy dwa wierzcholki sa w takiej samej skladowej spojnosci grafu\n");
+    printf("5 - zakoncz program\n");
     printf("Twoj wybor: ");
     scanf("%i", &c);
 
     switch (c)
     {
       case 1:
-        printf("\n");
-        writeSet(Z, e);
+        if (e > 0)
+        {
+          printf("\n");
+          writeSet(Z, e);
+        }
+        else printf("\nBrak zbiorow\n");
+        break;
+
+      case 2:
+        printf("\nPodaj wierzchołek: ");
+        scanf("%i", &o);
+
+        Z[e++] = MakeSet(o);
         break;
       
-      case 2:
-        printf("\nPodaj pierwszy zbior: ");
+      case 3:
+        printf("\nPodaj pierwszy wierzcholek: ");
         scanf("%i", &o);
-        printf("Podaj drugi zbior: ");
+        printf("Podaj drugi wierzcholek: ");
         scanf("%i", &t);
 
         Union(FindSet(Z[o]), FindSet(Z[t]));
         break;
 
-      case 3:
-        for (i = 0; i < e; i++) Z[i] = MakeSet(i);
+      case 4:
+        printf("\nPodaj pierwszy wierzcholek: ");
+        scanf("%i", &o);
+        printf("Podaj drugi wierzcholek: ");
+        scanf("%i", &t);
+
+        if (FindSet(Z[o]) == FindSet(Z[t])) printf("\nTe wierzcholki sa w tej samej skladowej spojnosci grafu\n");
+        else printf("\nTe wierzcholki nie sa w tej samej skladowej spojnosci grafu\n");
         break;
 
-      case 4:
+      case 5:
         return 0;
         break;
     }
