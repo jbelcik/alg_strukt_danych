@@ -6,11 +6,12 @@
 #define Limit 262144
 #define StringFile "tekst.txt"
 #define PatternFile "wzorzec.txt"
-#define MLD 1000000000.0
+#define MLD 100000000.0
 
 
-void czytaj(char string[], int stringSize, char pattern[], int patternSize)
+int readString(char string[])
 {
+  int stringSize = 0;
   char sign;
   FILE *f;
 
@@ -25,6 +26,16 @@ void czytaj(char string[], int stringSize, char pattern[], int patternSize)
     if (sign != '\n') string[stringSize++] = sign;
   }
 
+  return stringSize;
+}
+
+
+int readPattern(char pattern[])
+{
+  int patternSize = 0;
+  char sign;
+  FILE *f;
+
   if ((f = fopen(PatternFile, "r")) == NULL)
   {
     printf("Wystapil blad podczas wczytywania pliku ze wzorcem\n");
@@ -35,28 +46,37 @@ void czytaj(char string[], int stringSize, char pattern[], int patternSize)
   {
     if (sign != '\n') pattern[patternSize++] = sign;
   }
+
+  return patternSize;
 }
 
 
 void naiveStringMatcher(char string[], int stringSize, char pattern[], int patternSize)
 {
-  int i, j, k;
+  int i, j, guard = 0;
+
+  printf("Algorytm oczywisty:\n");
 
   for (i = 0; i <= stringSize - patternSize; i++)
   {
     if (pattern[0] == string[i])
     {
-      k = i + 1;
-
-      for (j = 1; j <= patternSize; j = j)
+      for (j = 1; j < patternSize; j++)
       {
-        if (pattern[j++] == string[k++])
+        if (pattern[j] == string[i + j])
         {
-          if (j == patternSize) printf("Algorytm oczywisty:\nWzorzec wystepuje z przesunieciem %i\n", i);
+          if (j == patternSize - 1)
+          {
+            printf("Wzorzec wystepuje z przesunieciem %i\n", i);
+            guard = 1;
+          }
         }
+        else break;
       }
     }
   }
+
+  if (guard == 0) printf("Wzorzec nie wystepuje w tym tekscie\n");
 }
 
 /*
@@ -75,26 +95,33 @@ void kmpMatcher(char string[], int stringSize, char pattern[], int patternSize)
 int main()
 {
   char s[Limit], p[Limit];
-  int ss = 0,
-      ps = 0;
   struct timespec start, stop;
 
-  czytaj(s, ss, p, ps);
+  int ss = readString(s),
+      ps = readPattern(p);
 
   clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &start);
   naiveStringMatcher(s, ss, p, ps);
   clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &stop);
-  printf("Czas dzialania: %3.5lf\n\n",(stop.tv_sec + stop.tv_nsec / MLD) - (start.tv_sec + start.tv_nsec / MLD));
+  double time1 = (stop.tv_sec + stop.tv_nsec / MLD) - (start.tv_sec + start.tv_nsec / MLD);
+  printf("Czas dzialania: %3.5lf\n\n", time1);
 /*
   clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &start);
   rabinKarpMatcher(s, ss, p, ps);
   clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &stop);
-  printf("Czas dzialania: %3.5lf\n\n",(stop.tv_sec + stop.tv_nsec / MLD) - (start.tv_sec + start.tv_nsec / MLD));
+  double time2 = (stop.tv_sec + stop.tv_nsec / MLD) - (start.tv_sec + start.tv_nsec / MLD);
+  printf("Czas dzialania: %3.5lf\n\n", time2);
 
   clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &start);
   kmpMatcher(s, ss, p, ps);
   clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &stop);
-  printf("Czas dzialania: %3.5lf\n",(stop.tv_sec + stop.tv_nsec / MLD) - (start.tv_sec + start.tv_nsec / MLD));
+  double time3 = (stop.tv_sec + stop.tv_nsec / MLD) - (start.tv_sec + start.tv_nsec / MLD);
+  printf("Czas dzialania: %3.5lf\n", time3);
 */
+  printf("Czasy dzialania:\n");
+  printf("Algorytm oczywisty: %3.5lf\n", time1);
+  //printf("Algorytm Knutha-Morrisa-Pratta: %3.5lf\n", time2);
+  //printf("Algorytm Rabina-Karpa: %3.5lf\n", time3);
+
   return 0;
 }
