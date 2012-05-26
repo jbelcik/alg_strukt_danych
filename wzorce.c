@@ -53,9 +53,9 @@ int readPattern(char pattern[])
 
 void naiveStringMatcher(char string[], int stringSize, char pattern[], int patternSize)
 {
-  int i, j, guard = 0;
-
   printf("Algorytm oczywisty:\n");
+
+  int i, j, guard = 0;
 
   for (i = 0; i <= stringSize - patternSize; i++)
   {
@@ -79,13 +79,57 @@ void naiveStringMatcher(char string[], int stringSize, char pattern[], int patte
   if (guard == 0) printf("Wzorzec nie wystepuje w tym tekscie\n");
 }
 
-/*
-void rabinLarpMatcher(char string[], int stringSize, char pattern[], int patternSize)
-{
 
+void rabinKarpMatcher(char string[], int stringSize, char pattern[], int patternSize)
+{
+  printf("Algorytm Rabina-Karpa:\n");
+
+  int i, j,
+      d = 128,
+      q = 101,
+      h = 1,
+      p = 0,
+      t = 0,
+      guard = 0;
+
+  for (i = 0; i < patternSize - 1; i++) h = (h * d) % q;
+
+  for (i = 0; i < patternSize; i++)
+  {
+    p = (d * p + pattern[i]) % q;
+    t = (d * t + string[i]) % q;
+  }
+
+  for (i = 0; i <= stringSize - patternSize; i++)
+  {
+    if (p == t)
+    {
+      for (j = 0; j < patternSize; j++)
+      {
+        if (pattern[j] == string[i + j])
+        {
+          if (j == patternSize - 1)
+          {
+            printf("Wzorzec wystepuje z przesunieciem %i\n", i);
+            guard = 1;
+          }
+        }
+        else break;
+      }
+    }
+
+    if (i < stringSize - patternSize)
+    {
+      t = (d * (t - string[i] * h) + string[i + patternSize]) % q;
+
+      if (t < 0) t += q;
+    }
+  }
+
+  if (guard == 0) printf("Wzorzec nie wystepuje w tym tekscie\n");
 }
 
-
+/*
 void kmpMatcher(char string[], int stringSize, char pattern[], int patternSize)
 {
 
@@ -104,14 +148,14 @@ int main()
   naiveStringMatcher(s, ss, p, ps);
   clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &stop);
   double time1 = (stop.tv_sec + stop.tv_nsec / MLD) - (start.tv_sec + start.tv_nsec / MLD);
-  printf("Czas dzialania: %3.5lf\n\n", time1);
-/*
+  printf("Czas dzialania - %3.5lf\n\n", time1);
+
   clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &start);
   rabinKarpMatcher(s, ss, p, ps);
   clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &stop);
   double time2 = (stop.tv_sec + stop.tv_nsec / MLD) - (start.tv_sec + start.tv_nsec / MLD);
-  printf("Czas dzialania: %3.5lf\n\n", time2);
-
+  printf("Czas dzialania - %3.5lf\n\n", time2);
+/*
   clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &start);
   kmpMatcher(s, ss, p, ps);
   clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &stop);
@@ -119,9 +163,9 @@ int main()
   printf("Czas dzialania: %3.5lf\n", time3);
 */
   printf("Czasy dzialania:\n");
-  printf("Algorytm oczywisty: %3.5lf\n", time1);
-  //printf("Algorytm Knutha-Morrisa-Pratta: %3.5lf\n", time2);
-  //printf("Algorytm Rabina-Karpa: %3.5lf\n", time3);
+  printf("%3.5lf - algorytm oczywisty\n", time1);
+  printf("%3.5lf - algorytm Rabina-Karpa\n", time2);
+  //printf("%3.5lf - algorytm Knutha-Morrisa-Pratta\n", time3);
 
   return 0;
 }
